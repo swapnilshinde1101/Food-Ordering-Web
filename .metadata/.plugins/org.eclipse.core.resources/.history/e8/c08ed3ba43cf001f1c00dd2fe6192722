@@ -1,0 +1,11 @@
+package com.foodordering.model;
+
+
+public class User {
+
+	public User() {
+
+	}
+	
+	private int id;
+}

@@ -1,0 +1,13 @@
+package com.foodordering.model;
+
+
+@data
+public class User {
+
+	public User() {
+
+	}
+	
+	@Id
+	private Long  id;
+}
