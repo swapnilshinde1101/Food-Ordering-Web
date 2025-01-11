@@ -1,68 +1,58 @@
 package com.foodordering.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.mapping.Array;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
+@Table(name = "restaurants")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Restaurant {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@OneToOne
-	private User owner;
-	
-	private String name;
-	
-	private String description;
-	
-	private String cuisineType;
-	
-	@OneToOne
-	private Address address;
+    @OneToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
-	@Embedded
+    private String name;
+
+    private String description;
+
+    private String cuisineType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @Embedded
     private ContactInformation contactInformation;
-	
-	private String openingHours;
-	
-	@OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL,orphanRemoval = true)
-	private List<Order> orders=new ArrayList<>();
-	
-	
-	@ElementCollection
-	private List<String>images;
-	
-	private LocalDateTime registrationDate;
-	
-	private boolean open;
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL)
-	private List<Food> food=new ArrayList<>();
 
+    private String openingHours;
+
+    @ElementCollection
+    @CollectionTable(name = "restaurant_images", joinColumns = @JoinColumn(name = "restaurant_id"))
+    @Column(name = "image_url")
+    private List<String> images;
+
+    private LocalDateTime registrationDate;
+
+    private boolean open;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Food> food = new ArrayList<>();
 }

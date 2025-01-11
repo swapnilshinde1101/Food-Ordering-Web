@@ -11,13 +11,11 @@ import lombok.Data;
 @Embeddable
 public class RestaurantDto {
 
+	private Long id;
 	private String title;
 	
-	@ElementCollection
 	private List<String> images;
-
-	
 	private String description;
-	private Long id;
+	
 	
 }

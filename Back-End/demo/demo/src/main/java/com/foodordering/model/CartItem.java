@@ -2,40 +2,37 @@ package com.foodordering.model;
 
 import java.util.List;
 
-import org.hibernate.annotations.ManyToAny;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Table(name = "cart_items")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItem {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@ManyToOne
-	@JsonIgnore
-	private Cart cart;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
-	@ManyToOne
-	private Food food;
-	
-	private int quantity;
-	
-	private List<String> ingredients;
-	
-	private Long totalPrice;
+    @ManyToOne
+    @JoinColumn(name = "food_id")
+    private Food food;
+
+    private int quantity;
+
+    @ElementCollection
+    @CollectionTable(name = "cart_item_ingredients", joinColumns = @JoinColumn(name = "cart_item_id"))
+    @Column(name = "ingredient")
+    private List<String> ingredients;
+
+    private Long totalPrice;
 }
