@@ -13,8 +13,9 @@
 <name>Food Ordering Website</name>
 <description>Food Ordering Website Application</description>
 <properties>
-<java.version>17</java.version>
+    <java.version>17</java.version> <!-- Ensure it matches your JDK -->
 </properties>
+
 <dependencies>
 <!--  Spring Boot Starter Web for REST API development  -->
 <dependency>
