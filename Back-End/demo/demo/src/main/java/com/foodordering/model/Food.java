@@ -21,7 +21,7 @@ public class Food {
 
     private String name;
     private String description;
-    private Long price;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

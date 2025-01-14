@@ -20,6 +20,7 @@ import java.util.Optional;
 @Service
 public class RestaurantServiceImp implements RestaurantService {
 
+
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -33,39 +34,46 @@ public class RestaurantServiceImp implements RestaurantService {
     public Restaurant createRestaurant(CreateRestaurantRequest req, User user) throws Exception {
         Address address = addressRepository.save(req.getAddress());
 
-
         Restaurant restaurant = new Restaurant();
         restaurant.setAddress(address);
-        restaurant.setContactInformation(req.getContactInformation());
         restaurant.setCuisineType(req.getCuisineType());
         restaurant.setDescription(req.getDescription());
         restaurant.setImages(req.getImages());
         restaurant.setName(req.getName());
         restaurant.setOpeningHours(req.getOpeningHours());
+        restaurant.setOwner(user);
+        restaurant.setMobile(req.getMobile());  // Set mobile from request
+        restaurant.setEmail(req.getEmail());  // Set email from request
         restaurant.setRegistrationDate(LocalDateTime.now());
-        restaurant.setOwner(user);  // Assuming user is linked to the restaurant
+        restaurant.setOpen(req.isOpen());  // Set open status from request
 
-        return restaurantRepository.save(restaurant);
+        return restaurantRepository.save(restaurant);  // Save the restaurant to the database
     }
 
     @Override
     public Restaurant updateRestaurant(Long restaurantId, CreateRestaurantRequest updatedRestaurant) throws Exception {
         Restaurant restaurant = findRestaurantById(restaurantId);
         
-        if (restaurant.getCuisineType()!=null) {
-        	restaurant.setCuisineType(updatedRestaurant.getCuisineType());
+        if (updatedRestaurant.getCuisineType() != null) {
+            restaurant.setCuisineType(updatedRestaurant.getCuisineType());
         }
-        if(restaurant.getDescription()!=null) {
+        if (updatedRestaurant.getDescription() != null) {
             restaurant.setDescription(updatedRestaurant.getDescription());
         }
-        if(restaurant.getName()!=null) {
-        	
-           restaurant.setName(updatedRestaurant.getName());
-        } 
-        return restaurantRepository.save(restaurant);
+        if (updatedRestaurant.getName() != null) {
+            restaurant.setName(updatedRestaurant.getName());
+        }
+        if (updatedRestaurant.getEmail() != null) {  // Update email if provided
+            restaurant.setEmail(updatedRestaurant.getEmail());
+        }
+        if (updatedRestaurant.getMobile() != null) {  // Update mobile if provided
+            restaurant.setMobile(updatedRestaurant.getMobile());
+        }
 
+        return restaurantRepository.save(restaurant);
     }
 
+   
     @Override
     public void deleteRestaurant(Long restaurantId) throws Exception {
         Restaurant restaurant = findRestaurantById(restaurantId);
@@ -116,16 +124,27 @@ public class RestaurantServiceImp implements RestaurantService {
         dto.setName(restaurant.getName());
 
         // Add or remove restaurant from favorites
-        if (user.getFavorites().contains(restaurant)) {
-            user.getFavorites().remove(restaurant);
-        } else {
-            user.getFavorites().add(restaurant);
+        boolean isFavorited = false;
+        List<Restaurant> favorites = user.getFavorites();  // Work with Restaurant objects here
+        
+        for (Restaurant favorite : favorites) {
+            if (favorite.getId().equals(restaurantId)) {
+                isFavorited = true;
+                break;
+            }
         }
 
-        userRepository.save(user);
+        if (isFavorited) {
+            favorites.removeIf(favorite -> favorite.getId().equals(restaurantId));
+        } else {
+            favorites.add(restaurant);  // Add the actual Restaurant object
+        }
 
-        return dto;
+        userRepository.save(user);  // Save the updated user with the new favorites list
+
+        return dto;  // Return RestaurantDto for the response
     }
+
 
 
     @Override

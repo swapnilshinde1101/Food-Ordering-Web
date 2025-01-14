@@ -16,23 +16,23 @@ import com.foodordering.service.UserService;
 @RequestMapping("/api/admin/restaurants")
 public class AdminRestaurantController {
 
-    @Autowired
+	@Autowired
     private RestaurantService restaurantService;
 
     @Autowired
     private UserService userService;
 
-    // Create a new restaurant
+ // Create a new restaurant
     @PostMapping
     public ResponseEntity<Restaurant> createRestaurant(
             @RequestBody CreateRestaurantRequest req,
             @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
-
         Restaurant restaurant = restaurantService.createRestaurant(req, user);
         return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
     }
+
 
     // Update an existing restaurant
     @PutMapping("/{id}")
@@ -58,7 +58,7 @@ public class AdminRestaurantController {
         restaurantService.deleteRestaurant(id);
         MessageResponse res=new MessageResponse();
         res.setMessage("restaurant deleted successfully");
-        return new ResponseEntity<>(res,HttpStatus.CREATED); 
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
     
  // Update a restaurant by ID

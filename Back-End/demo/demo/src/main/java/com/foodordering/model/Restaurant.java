@@ -10,11 +10,12 @@ import java.util.List;
 @Table(name = "restaurants")
 public class Restaurant {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	private Long id;
 
-    @OneToOne
+
+	@ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
 
@@ -24,9 +25,10 @@ public class Restaurant {
 
     private String cuisineType;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
+    
 
     @Embedded
     private ContactInformation contactInformation;
@@ -36,7 +38,10 @@ public class Restaurant {
     @ElementCollection
     @CollectionTable(name = "restaurant_images", joinColumns = @JoinColumn(name = "restaurant_id"))
     @Column(name = "image_url")
-    private List<String> images = new ArrayList<>();
+    private List<String> images;
+
+    
+  
 
     private LocalDateTime registrationDate;
 
@@ -50,9 +55,33 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> food = new ArrayList<>();
 
+    @Column(nullable = true) // This allows mobile to be nullable
+    private String mobile;
+
+    @Column(nullable = false)
+    private String email;  // Add this field if you want email to be stored directly
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
+    
     // Getters and Setters for all fields
 
-    public Long getId() {
+    public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -116,6 +145,7 @@ public class Restaurant {
         this.openingHours = openingHours;
     }
 
+    
     public List<String> getImages() {
         return images;
     }

@@ -11,17 +11,19 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String fullName;
 
     private String email;
 
+    
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     // Enum for roles
+
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
     @JsonIgnore
@@ -40,6 +42,11 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Restaurant> restaurants = new ArrayList<>();
+    
+    
+    
     // Getters and Setters
     public Long getId() {
         return id;
