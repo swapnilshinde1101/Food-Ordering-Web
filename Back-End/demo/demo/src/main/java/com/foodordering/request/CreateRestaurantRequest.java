@@ -9,32 +9,33 @@ public class CreateRestaurantRequest {
     private String name;
     private String description;
     private String cuisineType;
-    private ContactInformation contactInformation;
-    private List<String> images;
     private Address address;
+    private ContactInformation contactInformation;
     private String openingHours;
-    private String email;  // Add email field
-    private String phone;
-    private String mobile;
-    private boolean open;
-    private Long ownerId;
+    private List<String> images;
+    
+//    private String email;  // Add email field
+//    private String phone;
+//    private String mobile;
+//    private boolean open;
+//    private Long ownerId;
 
     // Getters and Setters
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public Long getOwnerId() {
+//        return ownerId;
+//    }
+//
+//    public void setOwnerId(Long ownerId) {
+//        this.ownerId = ownerId;
+//    }
 
 	public Long getId() {
 		return id;
@@ -100,28 +101,28 @@ public class CreateRestaurantRequest {
 		this.openingHours = openingHours;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-	public boolean isOpen() {
-		return open;
-	}
-
-	public void setOpen(boolean open) {
-		this.open = open;
-	}
+//	public String getPhone() {
+//		return phone;
+//	}
+//
+//	public void setPhone(String phone) {
+//		this.phone = phone;
+//	}
+//
+//	public String getMobile() {
+//		return mobile;
+//	}
+//
+//	public void setMobile(String mobile) {
+//		this.mobile = mobile;
+//	}
+//
+//	public boolean isOpen() {
+//		return open;
+//	}
+//
+//	public void setOpen(boolean open) {
+//		this.open = open;
+//	}
 
 }

@@ -1,34 +1,40 @@
 package com.foodordering.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "restaurants")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Restaurant {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
 
     private String name;
-
     private String description;
-
     private String cuisineType;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
-    
 
     @Embedded
     private ContactInformation contactInformation;
@@ -38,10 +44,7 @@ public class Restaurant {
     @ElementCollection
     @CollectionTable(name = "restaurant_images", joinColumns = @JoinColumn(name = "restaurant_id"))
     @Column(name = "image_url")
-    private List<String> images;
-
-    
-  
+    private List<String> images = new ArrayList<>();
 
     private LocalDateTime registrationDate;
 
@@ -55,40 +58,22 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> food = new ArrayList<>();
 
-    @Column(nullable = true) // This allows mobile to be nullable
+    @Column(nullable = true)
     private String mobile;
 
-    @Column(nullable = false)
-    private String email;  // Add this field if you want email to be stored directly
+//    @Column(name = "email")
+//    private String email;
 
-    public String getEmail() {
-        return email;
-    }
+    // Getters and Setters
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    
-    
-    // Getters and Setters for all fields
-
-    public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-
+@JsonManagedReference
     public User getOwner() {
         return owner;
     }
@@ -145,7 +130,7 @@ public class Restaurant {
         this.openingHours = openingHours;
     }
 
-    
+  
     public List<String> getImages() {
         return images;
     }
@@ -170,6 +155,7 @@ public class Restaurant {
         this.open = open;
     }
 
+    @JsonManagedReference
     public List<Order> getOrders() {
         return orders;
     }
@@ -178,6 +164,7 @@ public class Restaurant {
         this.orders = orders;
     }
 
+    @JsonManagedReference
     public List<Food> getFood() {
         return food;
     }
@@ -185,4 +172,20 @@ public class Restaurant {
     public void setFood(List<Food> food) {
         this.food = food;
     }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
 }

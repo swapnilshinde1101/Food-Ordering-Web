@@ -3,14 +3,19 @@ package com.foodordering.Dto;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+
 public class RestaurantDto {
 
     private Long id;
     private String name;
     private String description;
-    private List<String> images; // To store image URLs
+    
+    @Column(length = 1000)
+    private List<String> images; 
+    
+    
 
-    // Getter and Setter methods
     public Long getId() {
         return id;
     }
@@ -43,21 +48,12 @@ public class RestaurantDto {
         this.images = images;
     }
 
+    
+    
     public void setTitle(String name) {
-        this.name = name;  // You can map the 'name' to 'title' if required
+        this.name = name; 
     }
 
-    // Override equals and hashCode to compare objects based on the id field
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RestaurantDto that = (RestaurantDto) o;
-        return Objects.equals(id, that.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+
 }

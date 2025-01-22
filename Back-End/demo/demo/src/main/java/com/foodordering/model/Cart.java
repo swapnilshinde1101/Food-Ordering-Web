@@ -16,7 +16,7 @@ public class Cart {
     @JoinColumn(name = "customer_id")
     private User customer;
 
-    private Long total;
+    private double total;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
@@ -38,11 +38,11 @@ public class Cart {
         this.customer = customer;
     }
 
-    public Long getTotal() {
+    public double getTotal() {
         return total;
     }
 
-    public void setTotal(Long total) {
+    public void setTotal(double total) {
         this.total = total;
     }
 

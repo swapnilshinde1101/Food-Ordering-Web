@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,20 +33,24 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public Restaurant createRestaurant(CreateRestaurantRequest req, User user) throws Exception {
+    	
         Address address = addressRepository.save(req.getAddress());
 
         Restaurant restaurant = new Restaurant();
+        
         restaurant.setAddress(address);
+        restaurant.setContactInformation(req.getContactInformation());
         restaurant.setCuisineType(req.getCuisineType());
         restaurant.setDescription(req.getDescription());
         restaurant.setImages(req.getImages());
         restaurant.setName(req.getName());
         restaurant.setOpeningHours(req.getOpeningHours());
-        restaurant.setOwner(user);
-        restaurant.setMobile(req.getMobile());  // Set mobile from request
-        restaurant.setEmail(req.getEmail());  // Set email from request
         restaurant.setRegistrationDate(LocalDateTime.now());
-        restaurant.setOpen(req.isOpen());  // Set open status from request
+        restaurant.setOwner(user);
+        
+//        restaurant.setMobile(req.getMobile());  // Set mobile from request
+//       restaurant.setEmail(req.getEmail());  // Set email from request
+//        restaurant.setOpen(req.isOpen());  // Set open status from request
 
         return restaurantRepository.save(restaurant);  // Save the restaurant to the database
     }
@@ -54,21 +59,21 @@ public class RestaurantServiceImp implements RestaurantService {
     public Restaurant updateRestaurant(Long restaurantId, CreateRestaurantRequest updatedRestaurant) throws Exception {
         Restaurant restaurant = findRestaurantById(restaurantId);
         
-        if (updatedRestaurant.getCuisineType() != null) {
+        if (restaurant.getCuisineType() != null) {
             restaurant.setCuisineType(updatedRestaurant.getCuisineType());
         }
-        if (updatedRestaurant.getDescription() != null) {
+        if (restaurant.getDescription() != null) {
             restaurant.setDescription(updatedRestaurant.getDescription());
         }
-        if (updatedRestaurant.getName() != null) {
+        if (restaurant.getName() != null) {
             restaurant.setName(updatedRestaurant.getName());
         }
-        if (updatedRestaurant.getEmail() != null) {  // Update email if provided
-            restaurant.setEmail(updatedRestaurant.getEmail());
-        }
-        if (updatedRestaurant.getMobile() != null) {  // Update mobile if provided
-            restaurant.setMobile(updatedRestaurant.getMobile());
-        }
+//        if (updatedRestaurant.getEmail() != null) {  // Update email if provided
+////            restaurant.setEmail(updatedRestaurant.getEmail());
+//        }
+//        if (updatedRestaurant.getMobile() != null) {  // Update mobile if provided
+//            restaurant.setMobile(updatedRestaurant.getMobile());
+//        }
 
         return restaurantRepository.save(restaurant);
     }
@@ -94,10 +99,11 @@ public class RestaurantServiceImp implements RestaurantService {
     @Override
     public Restaurant findRestaurantById(Long id) throws Exception {
         Optional<Restaurant> opt = restaurantRepository.findById(id);
-        if (opt.isPresent()) {
-            return opt.get();  // If found, return the restaurant
+        if (opt.isEmpty()) {
+        	 throw new Exception("Restaurant not found with ID: " + id);
+          
         } else {
-            throw new Exception("Restaurant not found with ID: " + id);
+        	  return opt.get();  // If found, return the restaurant 
         }
     }
 
@@ -106,46 +112,81 @@ public class RestaurantServiceImp implements RestaurantService {
     public Restaurant getRestaurantByUserId(long userId) throws Exception {
         Restaurant restaurant = restaurantRepository.findByOwnerId(userId);
         if (restaurant == null) {
-            throw new Exception("Restaurant not found for this user");
+            throw new Exception("Restaurant not found for this owner Id"+userId);
         }
             return restaurant;
         
     }
 
+    
+    // add to Favorites  logic but  in code some issue 
+//    @Override
+//    public RestaurantDto addToFavorites(Long restaurantId, User user) throws Exception {
+//        Restaurant restaurant = findRestaurantById(restaurantId);
+//        RestaurantDto dto = new RestaurantDto();
+//        dto.setId(restaurantId);
+//        dto.setDescription(restaurant.getDescription());
+//        dto.setImages(restaurant.getImages());
+//        dto.setTitle(restaurant.getName());
+//        
+//        boolean isFavorited = false;
+//        List<RestaurantDto> favorites = user.getFavorites();
+//        for (RestaurantDto favorite : favorites) {	
+//            if (favorite.getId().equals(restaurantId)) {
+//                isFavorited = true;
+//                break;
+//            }
+//        }
+//        if (isFavorited) {
+//        	favorites.removeIf(favorite -> favorite.getId().equals(restaurantId)); 
+//        	} else {
+//            favorites.add(dto) ;
+//        }
+//        userRepository.save(user);  
+//        return dto; 
+//    }
+
+    
+    //add to favorites logic new 
     @Override
-    public RestaurantDto addToFavorites(Long restaurantId, User user) throws Exception {
-        Restaurant restaurant = findRestaurantById(restaurantId);
+   public RestaurantDto addToFavorites(Long restaurantId, User user) throws Exception {
+    Restaurant restaurant = findRestaurantById(restaurantId);
 
-        // Convert Restaurant to RestaurantDto
-        RestaurantDto dto = new RestaurantDto();
-        dto.setId(restaurant.getId());
-        dto.setDescription(restaurant.getDescription());
-        dto.setImages(restaurant.getImages());
-        dto.setName(restaurant.getName());
+    // Convert Restaurant to RestaurantDto for current restaurant
+    RestaurantDto dto = new RestaurantDto();
+    dto.setId(restaurantId);
+    dto.setDescription(restaurant.getDescription());
+    dto.setImages(restaurant.getImages());
+    dto.setTitle(restaurant.getName());
 
-        // Add or remove restaurant from favorites
-        boolean isFavorited = false;
-        List<Restaurant> favorites = user.getFavorites();  // Work with Restaurant objects here
-        
-        for (Restaurant favorite : favorites) {
-            if (favorite.getId().equals(restaurantId)) {
-                isFavorited = true;
-                break;
-            }
-        }
-
-        if (isFavorited) {
-            favorites.removeIf(favorite -> favorite.getId().equals(restaurantId));
-        } else {
-            favorites.add(restaurant);  // Add the actual Restaurant object
-        }
-
-        userRepository.save(user);  // Save the updated user with the new favorites list
-
-        return dto;  // Return RestaurantDto for the response
+    // Convert List<Restaurant> to List<RestaurantDto>
+    List<RestaurantDto> favoritesDtos = new ArrayList<>();
+    for (Restaurant fav : user.getFavorites()) {
+        RestaurantDto favoriteDto = new RestaurantDto();
+        favoriteDto.setId(fav.getId());
+        favoriteDto.setDescription(fav.getDescription());
+        favoriteDto.setImages(fav.getImages());
+        favoriteDto.setTitle(fav.getName());
+        favoritesDtos.add(favoriteDto);
     }
 
+    // Check if restaurant is already a favorite
+    boolean isFavorited = favoritesDtos.stream()
+            .anyMatch(favorite -> favorite.getId().equals(restaurantId));
 
+    if (isFavorited) {
+        favoritesDtos.removeIf(favorite -> favorite.getId().equals(restaurantId));
+        user.getFavorites().removeIf(favorite -> favorite.getId().equals(restaurantId));
+    } else {
+        favoritesDtos.add(dto);
+        user.getFavorites().add(restaurant);
+    }
+
+    // Save updated user
+    userRepository.save(user);
+
+    return dto;
+}
 
     @Override
     public Restaurant updateRestaurantStatus(Long id) throws Exception {

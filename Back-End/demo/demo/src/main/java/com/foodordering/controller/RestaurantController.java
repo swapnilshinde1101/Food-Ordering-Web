@@ -19,27 +19,25 @@ public class RestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
-
     @Autowired
     private UserService userService;
-
     // Search restaurants by keyword
+    
     @GetMapping("/search")
     public ResponseEntity<List<Restaurant>> searchRestaurant(
             @RequestHeader("Authorization") String jwt, 
             @RequestParam String keyword) throws Exception {
-
-        userService.findUserByJwtToken(jwt); // Authorization
+       User user= userService.findUserByJwtToken(jwt); 
         List<Restaurant> restaurants = restaurantService.searchRestaurant(keyword);
         return new ResponseEntity<>(restaurants, HttpStatus.OK);
     }
 
     // Get all restaurants
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<Restaurant>> getAllRestaurants(
             @RequestHeader("Authorization") String jwt) throws Exception {
 
-        userService.findUserByJwtToken(jwt); // Authorization
+        User user= userService.findUserByJwtToken(jwt); // Authorization
         List<Restaurant> restaurants = restaurantService.getAllRestaurants();
         return new ResponseEntity<>(restaurants, HttpStatus.OK);
     }
@@ -50,9 +48,9 @@ public class RestaurantController {
             @RequestHeader("Authorization") String jwt, 
             @PathVariable Long id) throws Exception {
 
-        userService.findUserByJwtToken(jwt); // Authorization
-        Restaurant restaurant = restaurantService.findRestaurantById(id);
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+        User user= userService.findUserByJwtToken(jwt); // Authorization
+        Restaurant restaurants = restaurantService.findRestaurantById(id);
+        return new ResponseEntity<>(restaurants, HttpStatus.OK);
     }
 
     // Add a restaurant to favorites
@@ -62,7 +60,7 @@ public class RestaurantController {
             @PathVariable Long id) throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
-        RestaurantDto restaurantDto = restaurantService.addToFavorites(id, user);
-        return new ResponseEntity<>(restaurantDto, HttpStatus.OK);
+        RestaurantDto restaurant = restaurantService.addToFavorites(id, user);
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 }

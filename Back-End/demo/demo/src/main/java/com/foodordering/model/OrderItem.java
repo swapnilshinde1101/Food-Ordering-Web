@@ -23,7 +23,7 @@ public class OrderItem {
 
     private int quantity;
 
-    private Long totalPrice;
+    private double totalPrice;
     
     @ManyToOne
     @JoinColumn(name = "order_id") 
@@ -33,4 +33,54 @@ public class OrderItem {
     @CollectionTable(name = "order_item_ingredients", joinColumns = @JoinColumn(name = "order_item_id"))
     @Column(name = "ingredient")
     private List<String> ingredients;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Food getFood() {
+		return food;
+	}
+
+	public void setFood(Food food) {
+		this.food = food;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public List<String> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<String> ingredients) {
+		this.ingredients = ingredients;
+	}
+    
+    
 }

@@ -1,5 +1,6 @@
 package com.foodordering.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -55,6 +56,7 @@ public class Order {
 	public void setCustomer(User customer) {
 		this.customer = customer;
 	}
+	@JsonBackReference
 	public Restaurant getRestaurant() {
 		return restaurant;
 	}
@@ -97,12 +99,12 @@ public class Order {
 	public void setTotalItem(int totalItem) {
 		this.totalItem = totalItem;
 	}
-	public int getTotalPrice() {
+	public double getTotalPrice() {
 		return totalPrice;
 	}
-	public void setTotalPrice(int totalPrice) {
+	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	private int totalPrice;
+	private double totalPrice;
 
 }
